@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #ff6b35;
+  --secondary: #00d1b2;
+  --accent: #ffd166;
+  --success: #06d6a0;
+  --danger: #ef476f;
+  --bg: #0a0a0f;
+  --bg-2: #111118;
+  --bg-3: #1a1a26;
+  --text: #f9fafb;
+  --text-2: #d1d5db;
+  --text-3: #6b7280;
+  --border: rgba(255,255,255,0.08);
+  --card: rgba(255,255,255,0.04);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Card base ─────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(255,107,53,0.3);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5),
+              0 0 20px rgba(255,107,53,0.08);
+}
+
+/* ── Step appear ───────────────────────────────────────────── */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.step-appear { animation: fadeSlideIn 0.4s ease forwards; }
+
+/* ── Core keyframes ────────────────────────────────────────── */
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+@keyframes floatY {
+  0%,100% { transform: translateY(0px); }
+  50%      { transform: translateY(-12px); }
+}
+
+/* ── New animation keyframes ───────────────────────────────── */
+
+/* Shimmer sweep — used on card borders and highlights */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Soft glow pulse — for accent elements */
+@keyframes pulseGlow {
+  0%,100% { box-shadow: 0 0 8px rgba(255,107,53,0.2); }
+  50%      { box-shadow: 0 0 24px rgba(255,107,53,0.45), 0 0 48px rgba(255,107,53,0.15); }
+}
+
+/* Scanline sweep — moves a line top-to-bottom */
+@keyframes scanline {
+  0%   { top: -2px; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Gradient background rotation */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Slide up entrance for staggered lists */
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Animated border color cycling */
+@keyframes borderGlow {
+  0%,100% { border-color: rgba(255,107,53,0.15); }
+  33%      { border-color: rgba(0,209,178,0.2); }
+  66%      { border-color: rgba(255,209,102,0.18); }
+}
+
+/* Slow float rotation — for parallax shapes */
+@keyframes floatRotate {
+  0%   { transform: translateY(0) rotate(0deg); }
+  50%  { transform: translateY(-18px) rotate(180deg); }
+  100% { transform: translateY(0) rotate(360deg); }
+}
+
+/* Gentle scale pulse */
+@keyframes breathe {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+
+/* CTA shimmer overlay */
+@keyframes ctaShimmer {
+  0%   { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-2); }
+::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+
+/* ── Glow divider between sections ─────────────────────────── */
+.glow-divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255,107,53,0.4) 20%,
+    rgba(0,209,178,0.3) 50%,
+    rgba(255,209,102,0.4) 80%,
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: gradientShift 4s ease infinite;
+}
+
+/* ── Magnetic hover glow ───────────────────────────────────── */
+.hover-glow {
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+.hover-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(0,209,178,0.1), rgba(255,209,102,0.12));
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: -1;
+  filter: blur(12px);
+}
+.hover-glow:hover::before {
+  opacity: 1;
+}
+.hover-glow:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,107,53,0.25);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+/* ── Parallax floating shapes ──────────────────────────────── */
+.parallax-shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.04;
+  pointer-events: none;
+  animation: floatRotate 20s linear infinite;
+}
