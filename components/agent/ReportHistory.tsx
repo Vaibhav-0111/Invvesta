@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import Badge from "@/components/ui/Badge";
+import { TrendingUp, TrendingDown, ArrowRight, Lock, BarChart2 } from "lucide-react";
 
 interface HistoryItem {
   id: string;
@@ -17,83 +19,127 @@ export default function ReportHistory() {
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    // Build URL: if signed in, filter by Firebase UID
     const url = user?.uid
       ? `/api/history?userId=${encodeURIComponent(user.uid)}`
       : "/api/history";
-
     fetch(url)
       .then(r => r.json())
       .then(d => { if (Array.isArray(d)) setHistory(d); })
       .finally(() => setLoading(false));
-  }, [user?.uid]);   // re-fetch if user changes (sign in / sign out)
+  }, [user?.uid]);
 
   if (loading) return (
-    <div style={{ padding: 24, borderRadius: 16, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", color: "#6b7280", fontSize: 13 }}>
-      Loading reports…
+    <div
+      className="card"
+      style={{ textAlign: "center", padding: "32px 24px" }}
+      role="status"
+      aria-label="Loading history"
+    >
+      <div className="spinner" style={{ margin: "0 auto 12px" }} />
+      <p className="text-body-sm">Loading reports…</p>
     </div>
   );
 
-  // Not signed in — prompt to sign in
   if (!isAuthenticated) return (
-    <div style={{ padding: 24, borderRadius: 16, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}>
-      <div style={{ fontSize: 28, marginBottom: 10 }}>🔐</div>
-      <div style={{ fontSize: 14, fontWeight: 700, color: "#f9fafb", marginBottom: 6 }}>Sign in to save reports</div>
-      <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 16 }}>Reports are linked to your Firebase account and stored in Supabase.</div>
-      <a href="/login" style={{
-        display: "inline-block", padding: "9px 22px",
-        background: "linear-gradient(135deg,#ff6b35,#ffd166)",
-        color: "#0a0a0f", borderRadius: 10, fontWeight: 700, fontSize: 13, textDecoration: "none",
-      }}>Sign In with Google →</a>
+    <div className="card" style={{ textAlign: "center", padding: 28 }}>
+      <Lock size={32} color="var(--text-tertiary)" style={{ margin: "0 auto 12px" }} />
+      <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>Sign in to save reports</h3>
+      <p className="text-body-sm" style={{ marginBottom: 16 }}>
+        Reports are linked to your Firebase account and stored in Supabase.
+      </p>
+      <a href="/login" className="btn btn-primary btn-sm" style={{ textDecoration: "none" }}>
+        Sign In with Google →
+      </a>
     </div>
   );
 
   if (history.length === 0) return (
-    <div style={{ padding: 24, borderRadius: 16, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", color: "#4b5563", fontSize: 13, textAlign: "center" }}>
-      No reports yet. Run your first analysis above ↑
+    <div className="card" style={{ textAlign: "center", padding: 32 }}>
+      <BarChart2 size={32} color="var(--text-tertiary)" style={{ margin: "0 auto 12px" }} />
+      <p className="text-body-sm">No reports yet. Run your first analysis ↑</p>
     </div>
   );
 
   return (
-    <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 16, padding: "20px 20px", display: "flex", flexDirection: "column", gap: 8 }}>
+    <div
+      className="card"
+      style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}
+      role="list"
+      aria-label="Recent research reports"
+    >
       {history.slice(0, 8).map(h => (
-        <a key={h.id} href={`/report?id=${h.id}`}
+        <a
+          key={h.id}
+          href={`/report?id=${h.id}`}
+          role="listitem"
+          aria-label={`${h.company_name} — ${h.recommendation}, score ${h.score}`}
           style={{
             display: "flex", justifyContent: "space-between", alignItems: "center",
-            padding: "10px 14px", background: "rgba(255,255,255,0.03)",
-            borderRadius: 10, border: "1px solid rgba(255,255,255,0.05)",
-            textDecoration: "none", transition: "all 0.2s ease", cursor: "pointer",
+            padding: "10px 12px",
+            background: "var(--bg-elevated)", border: "1px solid var(--border)",
+            borderRadius: "var(--radius-md)", textDecoration: "none",
+            transition: "all var(--duration-fast) var(--ease-out)",
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.background = "rgba(255,107,53,0.06)";
-            e.currentTarget.style.borderColor = "rgba(255,107,53,0.2)";
-            e.currentTarget.style.transform = "translateX(4px)";
+            e.currentTarget.style.background = "var(--primary-dim)";
+            e.currentTarget.style.borderColor = "rgba(59,130,246,0.25)";
+            e.currentTarget.style.transform = "translateX(3px)";
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.03)";
-            e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)";
+            e.currentTarget.style.background = "var(--bg-elevated)";
+            e.currentTarget.style.borderColor = "var(--border)";
             e.currentTarget.style.transform = "translateX(0)";
           }}
         >
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "white" }}>{h.company_name}</div>
-            <div style={{ fontSize: 11, color: "#6b7280" }}>
-              {h.ticker} · {new Date(h.created_at).toLocaleDateString()} · <span style={{ color: "#ff6b35" }}>View full report →</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+            <div
+              aria-hidden="true"
+              style={{
+                width: 30, height: 30, borderRadius: "var(--radius-sm)", flexShrink: 0,
+                background: h.recommendation === "INVEST" ? "var(--success-dim)" : "var(--danger-dim)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >
+              {h.recommendation === "INVEST"
+                ? <TrendingUp size={14} color="var(--success)" />
+                : <TrendingDown size={14} color="var(--danger)" />
+              }
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", marginBottom: 1 }} className="truncate">
+                {h.company_name}
+              </div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>
+                <span className="font-mono" style={{ color: "var(--primary)" }}>{h.ticker}</span>
+                {" · "}{new Date(h.created_at).toLocaleDateString()}
+              </div>
             </div>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{
-              fontSize: 11, fontWeight: 700, padding: "2px 9px", borderRadius: 6,
-              background: h.recommendation === "INVEST" ? "rgba(6,214,160,0.15)" : "rgba(239,71,111,0.15)",
-              color: h.recommendation === "INVEST" ? "#06d6a0" : "#ef476f",
-              border: `1px solid ${h.recommendation === "INVEST" ? "rgba(6,214,160,0.3)" : "rgba(239,71,111,0.3)"}`,
-            }}>
-              {h.recommendation}
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+            <div style={{ textAlign: "right" }}>
+              <div
+                style={{
+                  fontSize: 16, fontWeight: 900, lineHeight: 1,
+                  color: h.score >= 60 ? "var(--success)" : h.score >= 40 ? "var(--warning)" : "var(--danger)",
+                }}
+              >
+                {h.score}
+              </div>
             </div>
-            <div style={{ fontSize: 11, color: "#4b5563", marginTop: 3 }}>Score: {h.score}</div>
+            <Badge variant={h.recommendation === "INVEST" ? "invest" : "pass"}>
+              {h.recommendation}
+            </Badge>
+            <ArrowRight size={13} color="var(--text-tertiary)" aria-hidden="true" />
           </div>
         </a>
       ))}
+
+      {history.length > 8 && (
+        <a href="/history" className="btn btn-ghost btn-sm" style={{ textDecoration: "none", justifyContent: "center", marginTop: 4 }}>
+          View all {history.length} reports →
+        </a>
+      )}
     </div>
   );
 }

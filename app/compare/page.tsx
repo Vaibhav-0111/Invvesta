@@ -1,104 +1,82 @@
 "use client";
 import BattleMode from "@/components/agent/BattleMode";
+import Navbar from "@/components/ui/Navbar";
+import Footer from "@/components/ui/Footer";
+import { Swords, BarChart3, Brain, Trophy } from "lucide-react";
 
-const NAV_LINKS = [
-  { href: "/", label: "← Home" },
-  { href: "/history", label: "📋 History" },
-  { href: "/about", label: "About" },
+const HOW_STEPS = [
+  { Icon: Swords,   title: "Enter two companies", desc: "Type any two publicly traded companies you want to head-to-head." },
+  { Icon: Brain,    title: "AI runs dual analysis", desc: "Gemini analyses both simultaneously across 5 key investment categories." },
+  { Icon: BarChart3,title: "Category breakdown", desc: "Growth, profitability, valuation, risk, and momentum scored side-by-side." },
+  { Icon: Trophy,   title: "Winner declared", desc: "One clear winner with full reasoning and a confidence percentage." },
 ];
 
 export default function ComparePage() {
   return (
-    <div style={{ minHeight: "100vh", background: "#0a0a0f", color: "#f9fafb" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg-base)", color: "var(--text-primary)" }}>
+      <Navbar activePage="compare" />
 
-      {/* Nav */}
-      <nav style={{
-        position: "sticky", top: 0, zIndex: 100,
-        background: "rgba(10,10,15,0.85)", backdropFilter: "blur(20px)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        height: 60, display: "flex", alignItems: "center",
-        justifyContent: "space-between", padding: "0 28px",
-      }}>
-        <a href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 8,
-            background: "linear-gradient(135deg,#ff6b35,#ffd166)",
-            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16,
-            boxShadow: "0 0 12px rgba(255,107,53,0.3)",
-          }}>📈</div>
-          <span style={{ fontSize: 18, fontWeight: 900, color: "white" }}>Investra</span>
-          <span style={{ fontSize: 10, fontWeight: 700, background: "#ff6b35", color: "white", borderRadius: 5, padding: "2px 7px" }}>AI</span>
-        </a>
-        <div style={{ display: "flex", gap: 20 }}>
-          {NAV_LINKS.map(l => (
-            <a key={l.href} href={l.href} style={{ fontSize: 13, color: "#9ca3af", textDecoration: "none", transition: "color 0.2s" }}
-              onMouseEnter={e => (e.currentTarget.style.color = "#f9fafb")}
-              onMouseLeave={e => (e.currentTarget.style.color = "#9ca3af")}
-            >{l.label}</a>
-          ))}
-        </div>
-        <a href="/" style={{
-          padding: "8px 20px", background: "linear-gradient(135deg,#ff6b35,#ffd166)",
-          color: "#0a0a0f", borderRadius: 10, fontWeight: 700, fontSize: 13,
-          textDecoration: "none",
-        }}>+ New Analysis</a>
-      </nav>
-
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 20px" }}>
+      <main style={{ maxWidth: 960, margin: "0 auto", padding: "100px 24px 80px" }}>
 
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 56 }}>
-          <div style={{ fontSize: 11, color: "#ef476f", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 10 }}>
+        <header style={{ textAlign: "center", marginBottom: 56 }}>
+          <p className="eyebrow eyebrow-accent" style={{ marginBottom: 12 }}>
+            <span className="glow-dot glow-dot-blue" aria-hidden="true" />
             Head-to-Head Analysis
-          </div>
-          <h1 style={{
-            fontSize: "clamp(36px,5vw,60px)", fontWeight: 900, letterSpacing: "-0.035em",
-            background: "linear-gradient(135deg,#ff6b35 0%,#ffd166 50%,#ef476f 100%)",
-            backgroundSize: "200% 200%", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-            animation: "gradientShift 4s ease infinite",
-          }}>
-            ⚔️ Battle Mode
+          </p>
+          <h1 className="text-display-sm gradient-text-warm" style={{ marginBottom: 12 }}>
+            Battle Mode
           </h1>
-          <p style={{ fontSize: 16, color: "#6b7280", marginTop: 12, maxWidth: 500, margin: "12px auto 0" }}>
+          <p className="text-body" style={{ maxWidth: 460, margin: "0 auto", fontSize: 16 }}>
             Enter two companies and our AI will pick the stronger investment in seconds.
           </p>
-        </div>
+        </header>
 
-        {/* Battle Mode component */}
+        {/* Battle component */}
         <BattleMode fullPage />
 
         {/* How it works */}
-        <div style={{
-          marginTop: 64, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
-          borderRadius: 20, padding: 32,
-        }}>
-          <div style={{ fontSize: 11, color: "#00d1b2", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 20 }}>
+        <section
+          aria-labelledby="how-it-works-heading"
+          style={{
+            marginTop: 72,
+            padding: 36,
+            background: "var(--bg-surface)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-xl)",
+          }}
+        >
+          <p className="eyebrow eyebrow-primary" style={{ marginBottom: 10 }}>
+            <span className="glow-dot glow-dot-blue" aria-hidden="true" />
             How it works
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 20 }}>
-            {[
-              { icon: "✍️", title: "Enter two companies", desc: "Type any two public companies you want to compare" },
-              { icon: "🧠", title: "AI runs dual analysis", desc: "GPT-4o-mini analyses both simultaneously across 5 categories" },
-              { icon: "📊", title: "Category breakdown", desc: "Growth, profitability, valuation, risk, and momentum scored" },
-              { icon: "🏆", title: "Winner declared", desc: "One clear winner with reasoning and confidence score" },
-            ].map((s, i) => (
-              <div key={i} style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 28, marginBottom: 8 }}>{s.icon}</div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#f9fafb", marginBottom: 4 }}>{s.title}</div>
-                <div style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.5 }}>{s.desc}</div>
+          </p>
+          <h2 id="how-it-works-heading" style={{ fontSize: 18, fontWeight: 700, marginBottom: 28, color: "var(--text-secondary)" }}>
+            Behind Battle Mode
+          </h2>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 24 }}>
+            {HOW_STEPS.map(({ Icon, title, desc }, i) => (
+              <div key={i} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div
+                  style={{
+                    width: 40, height: 40, borderRadius: "var(--radius-md)",
+                    background: "var(--primary-dim)", border: "1px solid rgba(59,130,246,0.2)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}
+                >
+                  <Icon size={18} color="var(--primary)" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginBottom: 4 }}>{title}</h3>
+                  <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.55 }}>{desc}</p>
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
 
-      <style>{`
-        @keyframes gradientShift {
-          0%   { background-position: 0% 50%; }
-          50%  { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-      `}</style>
+      <Footer />
     </div>
   );
 }
